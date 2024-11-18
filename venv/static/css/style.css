@@ -1,0 +1,24 @@
+main {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+.sidebar {
+    width: 20%;
+    background-color: #f8f9fa;
+    padding-top: 20px;
+}
+.main-content {
+    flex: 1;
+    padding: 20px;
+    width: 80%;
+}
+.tab-content .table-container {
+    margin-top: 20px;
+}
+.dataTables_scrollHeadInner,
+.display.table.table-striped.dataTable.no-footer {
+    width: 100% !important;
+}
+/* Estilo general de la tabla */
+

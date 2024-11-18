@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicativo de Análisis de Datos</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</head>
+
+<body>
+    <main>
+        <div class="sidebar">
+            <h4 class="text-center">Navegación</h4>
+            <ul class="nav flex-column nav-tabs" id="mainTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="data-info-tab" data-toggle="tab" href="#data-info" role="tab">
+                        Información de los Datos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="central-tendency-tab" data-toggle="tab" href="#central-tendency" role="tab">
+                        Medidas de Tendencia
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="contingency-tab" data-toggle="tab" href="#contingency" role="tab">
+                        Tablas de Contingencia
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="graphs-tab" data-toggle="tab" href="#graphs" role="tab">
+                        Gráficos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="correlation-tab" data-toggle="tab" href="#correlation" role="tab">
+                        Correlaciones
+                    </a>
+                </li>
+                <!-- Otros items de la barra lateral aquí -->
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="mb-3">
+                <input type="file" id="file-input" accept=".csv, .xlsx" class="form-control" />
+                <button id="upload-button" class="btn btn-primary mt-2">Cargar Archivo</button>
+            </div>
+
+            <div class="tab-content" id="mainTabContent">
+                <!-- Tab de Información de Datos -->
+                <div class="tab-pane fade show active" id="data-info" role="tabpanel">
+                    <h4>Información del archivo:</h4>
+                    <ul class="nav nav-tabs" id="infoSubTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="head-tab" data-toggle="tab" href="#head" role="tab">
+                                Primeros 5 Registros
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="columns-tab" data-toggle="tab" href="#columns" role="tab">
+                                Columnas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="null-values-tab" data-toggle="tab" href="#null-values" role="tab">
+                                Valores Nulos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="size-tab" data-toggle="tab" href="#size" role="tab">
+                                Tamaño
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="dynamic-table-tab" data-toggle="tab" href="#dynamic-table"
+                                role="tab">
+                                Tabla Dinámica
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content mt-3" id="infoSubTabContent">
+                        <div class="tab-pane fade show active" id="head" role="tabpanel">
+                            <h5>Primeros 5 Registros</h5>
+                            <table id="head-table" class="display table table-striped" style="width:100%"></table>
+                        </div>
+                        <div class="tab-pane fade" id="columns" role="tabpanel">
+                            <h5>Columnas</h5>
+                            <p><strong>Total de columnas:</strong> <span id="columns-count"></span></p>
+                            <ul id="columns-list"></ul>
+                        </div>
+                        <div class="tab-pane fade" id="null-values" role="tabpanel">
+                            <h5>Valores Nulos</h5>
+                            <table id="null-values-table" class="display table table-striped" style="width:100%">
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="size" role="tabpanel">
+                            <h5>Tamaño del archivo y registros</h5>
+                            <p><strong>Cantidad de registros:</strong> <span id="size-rows"></span></p>
+                            <p><strong>Tamaño del archivo:</strong> <span id="file-size"></span> bytes</p>
+                        </div>
+                        <div class="tab-pane fade" id="dynamic-table" role="tabpanel">
+                            <h5>Tabla Dinámica</h5>
+                            <table id="dynamic-table-content" class="display table table-striped" style="width:100%">
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reemplaza el contenido actual del div central-tendency con esto -->
+                <div class="tab-pane fade" id="central-tendency" role="tabpanel">
+                    <h4>Medidas de Tendencia Central</h4>
+
+                    <div class="row mt-4">
+                        <!-- Columna para variables numéricas -->
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="card-title mb-0">Variables Numéricas</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="numerical-select">Seleccionar Variable:</label>
+                                        <select id="numerical-select" class="form-control mb-3">
+                                            <option value="">Seleccione una variable numérica</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="numerical-measure">Seleccionar Medida:</label>
+                                        <select id="numerical-measure" class="form-control mb-3">
+                                            <option value="">Seleccione una medida</option>
+                                            <option value="mean">Media</option>
+                                            <option value="median">Mediana</option>
+                                            <option value="mode">Moda</option>
+                                            <option value="max">Máximo</option>
+                                            <option value="min">Mínimo</option>
+                                            <option value="range">Rango</option>
+                                            <option value="unique_values">Valores Únicos</option>
+                                            <option value="all">Todas las medidas</option>
+                                        </select>
+                                    </div>
+                                    <div id="numerical-result" class="mt-3">
+                                        <!-- Aquí se mostrarán los resultados numéricos -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna para variables categóricas -->
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="card-title mb-0">Variables Categóricas</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="categorical-select">Seleccionar Variable:</label>
+                                        <select id="categorical-select" class="form-control mb-3">
+                                            <option value="">Seleccione una variable categórica</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="categorical-measure">Seleccionar Medida:</label>
+                                        <select id="categorical-measure" class="form-control mb-3">
+                                            <option value="">Seleccione una medida</option>
+                                            <option value="mode">Moda</option>
+                                            <option value="unique_values">Valores Únicos</option>
+                                            <option value="value_counts">Frecuencias</option>
+                                            <option value="all">Todas las medidas</option>
+                                        </select>
+                                    </div>
+                                    <div id="categorical-result" class="mt-3">
+                                        <!-- Aquí se mostrarán los resultados categóricos -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab de Tablas de Contingencia -->
+                <div class="tab-pane fade" id="contingency" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="card-title mb-0">Tablas de Contingencia</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="variable1-select">Primera Variable:</label>
+                                <select id="variable1-select" class="form-control mb-3">
+                                    <option value="">Seleccione la primera variable</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="variable2-select">Segunda Variable:</label>
+                                <select id="variable2-select" class="form-control mb-3">
+                                    <option value="">Seleccione la segunda variable</option>
+                                </select>
+                            </div>
+                            <button id="generate-contingency" class="btn btn-info">
+                                Generar Tabla
+                            </button>
+                            <div id="contingency-table-container" class="mt-4">
+                                <!-- Aquí se mostrará la tabla de contingencia -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab de Gráficos -->
+                <div class="tab-pane fade" id="graphs" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="card-title mb-0">Visualización de Datos</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="graph-type">Tipo de Gráfico:</label>
+                                <select id="graph-type" class="form-control mb-3">
+                                    <option value="">Seleccione el tipo de gráfico</option>
+                                    <option value="pie">Circular</option>
+                                    <option value="bar">Barras</option>
+                                    <option value="line">Líneas</option>
+                                    <option value="scatter">Dispersión</option>
+                                </select>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="x-axis-select">Variable Eje X:</label>
+                                <select id="x-axis-select" class="form-control mb-3">
+                                    <option value="">Seleccione variable para eje X</option>
+                                </select>
+                            </div>
+                            <div class="form-group" id="y-axis-group">
+                                <label for="y-axis-select">Variable Eje Y:</label>
+                                <select id="y-axis-select" class="form-control mb-3">
+                                    <option value="">Seleccione variable para eje Y</option>
+                                </select>
+                            </div>
+                            <button id="generate-graph" class="btn btn-success">
+                                Generar Gráfico
+                            </button>
+                            <div id="graph-container" class="mt-4">
+                                <img id="graph-canvas">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab de Correlaciones -->
+                <div class="tab-pane fade" id="correlation" role="tabpanel">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="card-title mb-0">Matriz de Correlación</h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Selección de columnas -->
+                            <div id="column-selection">
+                                <label for="column-checkboxes" class="form-label">Selecciona las columnas
+                                    numéricas:</label>
+                                <div id="column-checkboxes" class="mb-3">
+                                    <!-- Los checkboxes se generarán dinámicamente -->
+                                </div>
+                            </div>
+                            
+
+                            <button id="calculate-correlation" class="btn btn-primary">
+                                Calcular Correlación
+                            </button>
+
+                            <div id="correlation-table-container">
+                                <!-- Aquí se insertará la tabla de correlación -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+        </div>
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</body>
+
+</html>
