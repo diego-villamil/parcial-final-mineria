@@ -30,7 +30,7 @@
 - python-dateutil 2.9.0.post0
 - pytz            2024.2
 - setuptools      65.5.0
-six             1.16.0
-tzdata          2024.2
-Werkzeug        3.1.2
+- six             1.16.0
+- tzdata          2024.2
+- Werkzeug        3.1.2
 
