@@ -2,12 +2,12 @@
 
 ### Proyecto en rama "Master del repositorio"
 
-#integrante:
+# integrante:
 - **Diego Villamil**
 - **Yosimar Ariza**
 - **Humberto yanes**
 
-##Librerias de requemeintos para la ejecucion del proyecto
+## Librerias de requemeintos para la ejecucion del proyecto
 
 - blinker         1.8.2
 - click           8.1.7
