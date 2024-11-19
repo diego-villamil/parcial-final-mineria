@@ -1,6 +1,6 @@
 # parcial-final-mineria
 
-###Proyecto en rama "Master del repositorio"
+### Proyecto en rama "Master del repositorio"
 
 #integrante:
 - **Diego Villamil**
